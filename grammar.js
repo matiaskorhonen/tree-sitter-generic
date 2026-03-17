@@ -8,7 +8,12 @@ module.exports = grammar({
 
   word: ($) => $._word,
 
-  externals: ($) => [$.block_comment, $.html_comment, $.triple_quoted_string],
+  externals: ($) => [
+    $.line_comment,
+    $.block_comment,
+    $.html_comment,
+    $.triple_quoted_string,
+  ],
 
   rules: {
     source_file: ($) =>
@@ -34,8 +39,8 @@ module.exports = grammar({
     // Word rule for keyword boundary matching
     _word: (_) => /[a-zA-Z_]\w*/,
 
-    // Comments
-    line_comment: (_) => token(seq("//", /.*/)),
+    // Comments — line_comment is handled by the external scanner alongside
+    // block_comment so that `/` is dispatched without backtracking.
 
     hash_comment: (_) => token(seq("#", /.*/)),
 

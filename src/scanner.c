@@ -1,6 +1,7 @@
 #include "tree_sitter/parser.h"
 
 enum TokenType {
+  LINE_COMMENT,
   BLOCK_COMMENT,
   HTML_COMMENT,
   TRIPLE_QUOTED_STRING,
@@ -19,27 +20,44 @@ void tree_sitter_generic_external_scanner_deserialize(void *payload,
                                                       const char *buffer,
                                                       unsigned length) {}
 
-static bool scan_block_comment(TSLexer *lexer) {
-  // We expect to be positioned right after the parser matched nothing yet,
-  // so we need to match /* ourselves
-  if (lexer->lookahead != '/') return false;
-  lexer->advance(lexer, false);
-  if (lexer->lookahead != '*') return false;
+static bool scan_slash_comment(TSLexer *lexer, const bool *valid_symbols) {
+  // Positioned at '/'
   lexer->advance(lexer, false);
 
-  while (!lexer->eof(lexer)) {
-    if (lexer->lookahead == '*') {
-      lexer->advance(lexer, false);
-      if (lexer->lookahead == '/') {
-        lexer->advance(lexer, false);
-        return true;
-      }
-    } else {
+  if (lexer->lookahead == '/' && valid_symbols[LINE_COMMENT]) {
+    // Line comment: consume until end of line
+    lexer->advance(lexer, false);
+    while (!lexer->eof(lexer) && lexer->lookahead != '\n') {
       lexer->advance(lexer, false);
     }
+    lexer->result_symbol = LINE_COMMENT;
+    lexer->mark_end(lexer);
+    return true;
   }
-  // Unclosed comment — still return true to highlight what we have
-  return true;
+
+  if (lexer->lookahead == '*' && valid_symbols[BLOCK_COMMENT]) {
+    // Block comment: consume until */
+    lexer->advance(lexer, false);
+    while (!lexer->eof(lexer)) {
+      if (lexer->lookahead == '*') {
+        lexer->advance(lexer, false);
+        if (lexer->lookahead == '/') {
+          lexer->advance(lexer, false);
+          lexer->result_symbol = BLOCK_COMMENT;
+          lexer->mark_end(lexer);
+          return true;
+        }
+      } else {
+        lexer->advance(lexer, false);
+      }
+    }
+    // Unclosed block comment
+    lexer->result_symbol = BLOCK_COMMENT;
+    lexer->mark_end(lexer);
+    return true;
+  }
+
+  return false;
 }
 
 static bool scan_html_comment(TSLexer *lexer) {
@@ -102,13 +120,14 @@ bool tree_sitter_generic_external_scanner_scan(void *payload, TSLexer *lexer,
     lexer->advance(lexer, true);
   }
 
-  if (valid_symbols[BLOCK_COMMENT] && lexer->lookahead == '/') {
-    lexer->result_symbol = BLOCK_COMMENT;
-    return scan_block_comment(lexer);
+  // Dispatch '/' to handle both // and /* without backtracking
+  if (lexer->lookahead == '/' &&
+      (valid_symbols[LINE_COMMENT] || valid_symbols[BLOCK_COMMENT])) {
+    lexer->mark_end(lexer);
+    return scan_slash_comment(lexer, valid_symbols);
   }
 
   if (valid_symbols[HTML_COMMENT] && lexer->lookahead == '<') {
-    // Try HTML comment first; if it fails, let the grammar's tag rule handle <
     lexer->mark_end(lexer);
     lexer->result_symbol = HTML_COMMENT;
     if (scan_html_comment(lexer)) {
