@@ -313,8 +313,33 @@
     "hash": {
       "type": "TOKEN",
       "content": {
-        "type": "PATTERN",
-        "value": "[a-f0-9]{32}"
+        "type": "CHOICE",
+        "members": [
+          {
+            "type": "PATTERN",
+            "value": "[a-f0-9]{128}"
+          },
+          {
+            "type": "PATTERN",
+            "value": "[a-f0-9]{96}"
+          },
+          {
+            "type": "PATTERN",
+            "value": "[a-f0-9]{64}"
+          },
+          {
+            "type": "PATTERN",
+            "value": "[a-f0-9]{56}"
+          },
+          {
+            "type": "PATTERN",
+            "value": "[a-f0-9]{40}"
+          },
+          {
+            "type": "PATTERN",
+            "value": "[a-f0-9]{32}"
+          }
+        ]
       }
     },
     "tag": {

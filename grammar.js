@@ -82,8 +82,19 @@ module.exports = grammar({
         ),
       ),
 
-    // Hashes — 32-character hex strings (MD5-like)
-    hash: (_) => token(/[a-f0-9]{32}/),
+    // Hashes — hex strings of known digest lengths
+    // MD5 (32), SHA-1 (40), SHA-224 (56), SHA-256 (64), SHA-384 (96), SHA-512 (128)
+    hash: (_) =>
+      token(
+        choice(
+          /[a-f0-9]{128}/,
+          /[a-f0-9]{96}/,
+          /[a-f0-9]{64}/,
+          /[a-f0-9]{56}/,
+          /[a-f0-9]{40}/,
+          /[a-f0-9]{32}/,
+        ),
+      ),
 
     // Tags — XML/HTML-like markup
     tag: (_) =>

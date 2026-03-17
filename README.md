@@ -17,7 +17,7 @@ Rather than parsing a specific language, this grammar tokenizes common patterns 
 | `json_label` | `"key":` | `@string.special` |
 | `number` | `42`, `0xFF`, `3.14`, `1_000`, `1.5e10` | `@number` |
 | `date` | ISO 8601, RFC 2822 timestamps | `@number` |
-| `hash` | 32-char hex strings (MD5-like) | `@string.special` |
+| `hash` | Hex digest strings — MD5 (32), SHA-1 (40), SHA-256 (64), SHA-512 (128) | `@string.special` |
 | `tag` | `<div>`, `</div>`, `<br />` | `@tag` |
 | `attribute` | `var`, `let`, `if`, `else`, `return`, `class`, `function`, `import`, `export`, ... | `@keyword` |
 | `keyword` | `true`, `false`, `int`, `string`, `bool`, `float`, `double`, `from`, `to` | `@type` |
