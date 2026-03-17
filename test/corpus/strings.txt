@@ -1,0 +1,56 @@
+===
+Double-quoted string
+===
+
+"hello world"
+
+---
+
+(source_file
+  (quoted_string))
+
+===
+Single-quoted string
+===
+
+'hello world'
+
+---
+
+(source_file
+  (quoted_string))
+
+===
+Backtick string
+===
+
+`template`
+
+---
+
+(source_file
+  (quoted_string))
+
+===
+String with escape
+===
+
+"hello \"world\""
+
+---
+
+(source_file
+  (quoted_string))
+
+===
+Triple-quoted string
+===
+
+"""triple
+quoted
+string"""
+
+---
+
+(source_file
+  (triple_quoted_string))

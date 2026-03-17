@@ -1,0 +1,16 @@
+===
+Mixed content
+===
+
+// set up variable
+var x = 42
+"key": true
+
+---
+
+(source_file
+  (line_comment)
+  (attribute)
+  (number)
+  (json_label)
+  (keyword))

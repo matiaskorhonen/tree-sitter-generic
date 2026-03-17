@@ -1,0 +1,21 @@
+===
+ISO 8601 date
+===
+
+2026-03-17T12:00:00Z
+
+---
+
+(source_file
+  (date))
+
+===
+RFC 2822 date
+===
+
+Mon, 17 Mar 2026 12:00:00 GMT
+
+---
+
+(source_file
+  (date))

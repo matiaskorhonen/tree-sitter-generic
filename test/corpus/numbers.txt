@@ -1,0 +1,65 @@
+===
+Integer
+===
+
+42
+
+---
+
+(source_file
+  (number))
+
+===
+Hex number
+===
+
+0xFF
+
+---
+
+(source_file
+  (number))
+
+===
+Decimal with underscore
+===
+
+1_000_000
+
+---
+
+(source_file
+  (number))
+
+===
+Float
+===
+
+3.14
+
+---
+
+(source_file
+  (number))
+
+===
+Scientific notation
+===
+
+1.5e10
+
+---
+
+(source_file
+  (number))
+
+===
+Leading dot
+===
+
+.5
+
+---
+
+(source_file
+  (number))

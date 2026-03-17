@@ -1,0 +1,43 @@
+===
+Opening tag
+===
+
+<div>
+
+---
+
+(source_file
+  (tag))
+
+===
+Closing tag
+===
+
+</div>
+
+---
+
+(source_file
+  (tag))
+
+===
+Self-closing tag
+===
+
+<br />
+
+---
+
+(source_file
+  (tag))
+
+===
+Tag with attribute
+===
+
+<a href="url">
+
+---
+
+(source_file
+  (tag))

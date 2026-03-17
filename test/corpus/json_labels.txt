@@ -1,0 +1,23 @@
+===
+JSON label with string value
+===
+
+"name": "John"
+
+---
+
+(source_file
+  (json_label)
+  (quoted_string))
+
+===
+JSON label with number value
+===
+
+"age": 30
+
+---
+
+(source_file
+  (json_label)
+  (number))

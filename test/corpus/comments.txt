@@ -1,0 +1,56 @@
+===
+Line comment
+===
+
+// this is a comment
+
+---
+
+(source_file
+  (line_comment))
+
+===
+Block comment
+===
+
+/* block comment */
+
+---
+
+(source_file
+  (block_comment))
+
+===
+Multi-line block comment
+===
+
+/* multi
+   line
+   comment */
+
+---
+
+(source_file
+  (block_comment))
+
+===
+HTML comment
+===
+
+<!-- html comment -->
+
+---
+
+(source_file
+  (html_comment))
+
+===
+Hash comment
+===
+
+# hash comment
+
+---
+
+(source_file
+  (hash_comment))
