@@ -1,49 +1,56 @@
-## Problem
+## Overview
 
-When no specific language is detected, Doop falls back to plain text with no syntax highlighting. Boop (the app Doop is inspired by) has a built-in generic lexer ([BoopLexer.swift](https://github.com/IvanMathy/Boop/blob/main/Boop/Boop/Editor/BoopLexer.swift)) that highlights common patterns across languages, making pasted text immediately readable without language detection.
+A minimal tree-sitter grammar that provides generic syntax highlighting when no specific language is detected. Inspired by [Boop's built-in lexer](https://github.com/IvanMathy/Boop/blob/main/Boop/Boop/Editor/BoopLexer.swift), used as a fallback in Doop.
 
-## Proposal
+## Architecture
 
-Create a minimal `tree-sitter-generic` grammar that recognizes the same token types as Boop's lexer:
+The grammar is a flat tokenizer — `source_file` is `repeat(choice(...all tokens..., _other))`. There is no nested structure or AST hierarchy.
 
-### Token types to support
+- `extras: [/\s/]` — whitespace handled automatically
+- `word: _word` with `_word: /[a-zA-Z_]\w*/` — enables word-boundary keyword matching
+- `_other: /[^\s]/` — catch-all for unrecognized characters
 
-| Token | Patterns |
-|---|---|
-| **Comments** | `//`, `/* */`, `<!-- -->`, `#` line comments |
-| **Strings** | Single, double, and backtick quotes with escape sequences; triple-quoted strings |
-| **Numbers** | Hex (`0x`), decimals with underscores, scientific notation |
-| **Attributes** | Common keywords: `var`, `val`, `let`, `if`, `else`, `export`, `import`, `return`, `static`, `fun`, `function`, `func`, `class`, `open`, `new`, `as`, `where`, `select`, `delete`, `add`, `limit`, `update`, `insert` |
-| **Keywords** | Types and booleans: `true`, `false`, `to`, `string`, `int`, `float`, `double`, `bool`, `boolean`, `from` |
-| **Dates** | UTC/RFC-formatted timestamps |
-| **Hashes** | MD5-like 32-character hex strings |
-| **Tags** | XML/HTML-like markup (`<tag>`, `</tag>`) |
-| **JSON labels** | Quoted identifiers followed by colons |
+### External scanner (`src/scanner.c`)
 
-### Highlights query mapping
+Handles tokens that span multiple lines (tree-sitter regexes can't match across newlines):
 
-```scheme
-(comment)   @comment
-(string)    @string
-(number)    @number
-(date)      @number
-(hash)      @string.special
-(tag)       @tag
-(attribute) @keyword
-(keyword)   @type
+- `line_comment` and `block_comment` — both dispatched from `/` in a single pass to avoid backtracking
+- `html_comment` — `<!-- ... -->`
+- `triple_quoted_string` — `""" ... """`
+
+When `<` is seen, the scanner tries `<!--` first; if it fails, it returns false so the grammar's `tag` rule can match instead.
+
+### Token types
+
+| Node | Patterns | Highlight |
+|------|----------|-----------|
+| `line_comment` | `// ...` (external scanner) | `@comment` |
+| `block_comment` | `/* ... */` (external scanner) | `@comment` |
+| `html_comment` | `<!-- ... -->` (external scanner) | `@comment` |
+| `hash_comment` | `# ...` | `@comment` |
+| `quoted_string` | `"..."`, `'...'`, `` `...` `` with escapes | `@string` |
+| `triple_quoted_string` | `"""..."""` (external scanner) | `@string` |
+| `json_label` | `"key":` — wins over `quoted_string` via longest match | `@string.special` |
+| `number` | `42`, `0xFF`, `3.14`, `1_000`, `1.5e10`, `.5` | `@number` |
+| `date` | ISO 8601 (`2026-03-17T12:00:00Z`), RFC 2822 | `@number` |
+| `hash` | Hex digests: MD5 (32), SHA-1 (40), SHA-224 (56), SHA-256 (64), SHA-384 (96), SHA-512 (128) | `@string.special` |
+| `tag` | `<div>`, `</div>`, `<br />`, `<a href="...">` | `@tag` |
+| `attribute` | `var`, `val`, `let`, `if`, `else`, `export`, `import`, `return`, `static`, `fun`, `function`, `func`, `class`, `open`, `new`, `as`, `where`, `select`, `delete`, `add`, `limit`, `update`, `insert` | `@keyword` |
+| `keyword` | `true`, `false`, `to`, `string`, `int`, `float`, `double`, `bool`, `boolean`, `from` | `@type` |
+
+## Development
+
+```sh
+npm install                  # install tree-sitter-cli
+npx tree-sitter generate     # regenerate src/parser.c from grammar.js
+npx tree-sitter test         # run test corpus
+npx tree-sitter parse FILE   # parse a file and print the tree
 ```
 
-### Why tree-sitter instead of a regex lexer
-
-- Tree-sitter handles multi-line strings, nested comments, and edge cases correctly
-- Consistent with the existing CodeEditLanguages architecture
-- The compiled grammar would be very small (well under 100 KB) since it's just tokenizing
-- Incremental parsing means re-highlighting on edits is fast
+Generated `src/` files are checked in for downstream Swift package consumers.
 
 ## References
 
-Follow the `tree-sitter/creating-parsers` documentation on how to create a new Tree Sitter parser.
-
 - [BoopLexer.swift](https://github.com/IvanMathy/Boop/blob/main/Boop/Boop/Editor/BoopLexer.swift) — Boop's regex-based lexer
 - [BoopToken.swift](https://github.com/IvanMathy/Boop/blob/main/Boop/Boop/Editor/BoopToken.swift) — Boop's token types
-- [Tree-sitter docs: Creating parsers](https://tree-sitter.github.io/tree-sitter/creating-parsers) (https://github.com/tree-sitter/tree-sitter/tree/master/docs/src/creating-parsers)
+- [Tree-sitter docs: Creating parsers](https://tree-sitter.github.io/tree-sitter/creating-parsers)
