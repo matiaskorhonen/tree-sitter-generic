@@ -1,15 +1,5 @@
 [
   {
-    "type": "attribute",
-    "named": true,
-    "fields": {}
-  },
-  {
-    "type": "keyword",
-    "named": true,
-    "fields": {}
-  },
-  {
     "type": "source_file",
     "named": true,
     "root": true,
@@ -74,72 +64,16 @@
     }
   },
   {
-    "type": "add",
-    "named": false
-  },
-  {
-    "type": "as",
-    "named": false
+    "type": "attribute",
+    "named": true
   },
   {
     "type": "block_comment",
     "named": true
   },
   {
-    "type": "bool",
-    "named": false
-  },
-  {
-    "type": "boolean",
-    "named": false
-  },
-  {
-    "type": "class",
-    "named": false
-  },
-  {
     "type": "date",
     "named": true
-  },
-  {
-    "type": "delete",
-    "named": false
-  },
-  {
-    "type": "double",
-    "named": false
-  },
-  {
-    "type": "else",
-    "named": false
-  },
-  {
-    "type": "export",
-    "named": false
-  },
-  {
-    "type": "false",
-    "named": false
-  },
-  {
-    "type": "float",
-    "named": false
-  },
-  {
-    "type": "from",
-    "named": false
-  },
-  {
-    "type": "fun",
-    "named": false
-  },
-  {
-    "type": "func",
-    "named": false
-  },
-  {
-    "type": "function",
-    "named": false
   },
   {
     "type": "hash",
@@ -154,99 +88,31 @@
     "named": true
   },
   {
-    "type": "if",
-    "named": false
-  },
-  {
-    "type": "import",
-    "named": false
-  },
-  {
-    "type": "insert",
-    "named": false
-  },
-  {
-    "type": "int",
-    "named": false
-  },
-  {
     "type": "json_label",
     "named": true
   },
   {
-    "type": "let",
-    "named": false
-  },
-  {
-    "type": "limit",
-    "named": false
+    "type": "keyword",
+    "named": true
   },
   {
     "type": "line_comment",
     "named": true
   },
   {
-    "type": "new",
-    "named": false
-  },
-  {
     "type": "number",
     "named": true
-  },
-  {
-    "type": "open",
-    "named": false
   },
   {
     "type": "quoted_string",
     "named": true
   },
   {
-    "type": "return",
-    "named": false
-  },
-  {
-    "type": "select",
-    "named": false
-  },
-  {
-    "type": "static",
-    "named": false
-  },
-  {
-    "type": "string",
-    "named": false
-  },
-  {
     "type": "tag",
     "named": true
   },
   {
-    "type": "to",
-    "named": false
-  },
-  {
     "type": "triple_quoted_string",
     "named": true
-  },
-  {
-    "type": "true",
-    "named": false
-  },
-  {
-    "type": "update",
-    "named": false
-  },
-  {
-    "type": "val",
-    "named": false
-  },
-  {
-    "type": "var",
-    "named": false
-  },
-  {
-    "type": "where",
-    "named": false
   }
 ]

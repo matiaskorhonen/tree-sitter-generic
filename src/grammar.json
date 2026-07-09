@@ -62,14 +62,21 @@
           },
           {
             "type": "SYMBOL",
+            "name": "_word"
+          },
+          {
+            "type": "SYMBOL",
             "name": "_other"
           }
         ]
       }
     },
     "_word": {
-      "type": "PATTERN",
-      "value": "[a-zA-Z_]\\w*"
+      "type": "TOKEN",
+      "content": {
+        "type": "PATTERN",
+        "value": "[a-zA-Z_]\\w*"
+      }
     },
     "hash_comment": {
       "type": "TOKEN",
@@ -103,7 +110,7 @@
               "members": [
                 {
                   "type": "PATTERN",
-                  "value": "[^\"\\\\]"
+                  "value": "[^\"\\\\\\r\\n]"
                 },
                 {
                   "type": "SEQ",
@@ -114,7 +121,7 @@
                     },
                     {
                       "type": "PATTERN",
-                      "value": "[^\\n]"
+                      "value": "[^\\r\\n]"
                     }
                   ]
                 }
@@ -127,7 +134,7 @@
           },
           {
             "type": "PATTERN",
-            "value": "\\s*"
+            "value": "[ \\t]*"
           },
           {
             "type": "STRING",
@@ -155,7 +162,7 @@
                   "members": [
                     {
                       "type": "PATTERN",
-                      "value": "[^\"\\\\]"
+                      "value": "[^\"\\\\\\r\\n]"
                     },
                     {
                       "type": "SEQ",
@@ -166,7 +173,7 @@
                         },
                         {
                           "type": "PATTERN",
-                          "value": "[^\\n]"
+                          "value": "[^\\r\\n]"
                         }
                       ]
                     }
@@ -193,7 +200,7 @@
                   "members": [
                     {
                       "type": "PATTERN",
-                      "value": "[^'\\\\]"
+                      "value": "[^'\\\\\\r\\n]"
                     },
                     {
                       "type": "SEQ",
@@ -204,7 +211,7 @@
                         },
                         {
                           "type": "PATTERN",
-                          "value": "[^\\n]"
+                          "value": "[^\\r\\n]"
                         }
                       ]
                     }
@@ -231,7 +238,7 @@
                   "members": [
                     {
                       "type": "PATTERN",
-                      "value": "[^`\\\\]"
+                      "value": "[^`\\\\\\r\\n]"
                     },
                     {
                       "type": "SEQ",
@@ -242,7 +249,7 @@
                         },
                         {
                           "type": "PATTERN",
-                          "value": "[^\\n]"
+                          "value": "[^\\r\\n]"
                         }
                       ]
                     }
@@ -297,33 +304,37 @@
     "hash": {
       "type": "TOKEN",
       "content": {
-        "type": "CHOICE",
-        "members": [
-          {
-            "type": "PATTERN",
-            "value": "[a-f0-9]{128}"
-          },
-          {
-            "type": "PATTERN",
-            "value": "[a-f0-9]{96}"
-          },
-          {
-            "type": "PATTERN",
-            "value": "[a-f0-9]{64}"
-          },
-          {
-            "type": "PATTERN",
-            "value": "[a-f0-9]{56}"
-          },
-          {
-            "type": "PATTERN",
-            "value": "[a-f0-9]{40}"
-          },
-          {
-            "type": "PATTERN",
-            "value": "[a-f0-9]{32}"
-          }
-        ]
+        "type": "PREC",
+        "value": 1,
+        "content": {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "PATTERN",
+              "value": "[a-fA-F0-9]{128}"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[a-fA-F0-9]{96}"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[a-fA-F0-9]{64}"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[a-fA-F0-9]{56}"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[a-fA-F0-9]{40}"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[a-fA-F0-9]{32}"
+            }
+          ]
+        }
       }
     },
     "tag": {
@@ -412,146 +423,26 @@
       }
     },
     "attribute": {
-      "type": "CHOICE",
-      "members": [
-        {
-          "type": "STRING",
-          "value": "var"
-        },
-        {
-          "type": "STRING",
-          "value": "val"
-        },
-        {
-          "type": "STRING",
-          "value": "let"
-        },
-        {
-          "type": "STRING",
-          "value": "if"
-        },
-        {
-          "type": "STRING",
-          "value": "else"
-        },
-        {
-          "type": "STRING",
-          "value": "export"
-        },
-        {
-          "type": "STRING",
-          "value": "import"
-        },
-        {
-          "type": "STRING",
-          "value": "return"
-        },
-        {
-          "type": "STRING",
-          "value": "static"
-        },
-        {
-          "type": "STRING",
-          "value": "fun"
-        },
-        {
-          "type": "STRING",
-          "value": "function"
-        },
-        {
-          "type": "STRING",
-          "value": "func"
-        },
-        {
-          "type": "STRING",
-          "value": "class"
-        },
-        {
-          "type": "STRING",
-          "value": "open"
-        },
-        {
-          "type": "STRING",
-          "value": "new"
-        },
-        {
-          "type": "STRING",
-          "value": "as"
-        },
-        {
-          "type": "STRING",
-          "value": "where"
-        },
-        {
-          "type": "STRING",
-          "value": "select"
-        },
-        {
-          "type": "STRING",
-          "value": "delete"
-        },
-        {
-          "type": "STRING",
-          "value": "add"
-        },
-        {
-          "type": "STRING",
-          "value": "limit"
-        },
-        {
-          "type": "STRING",
-          "value": "update"
-        },
-        {
-          "type": "STRING",
-          "value": "insert"
+      "type": "TOKEN",
+      "content": {
+        "type": "PREC",
+        "value": 1,
+        "content": {
+          "type": "PATTERN",
+          "value": "(?:[vV][aA][rR]|[vV][aA][lL]|[lL][eE][tT]|[iI][fF]|[eE][lL][sS][eE]|[eE][xX][pP][oO][rR][tT]|[iI][mM][pP][oO][rR][tT]|[rR][eE][tT][uU][rR][nN]|[sS][tT][aA][tT][iI][cC]|[fF][uU][nN]|[fF][uU][nN][cC][tT][iI][oO][nN]|[fF][uU][nN][cC]|[cC][lL][aA][sS][sS]|[oO][pP][eE][nN]|[nN][eE][wW]|[aA][sS]|[wW][hH][eE][rR][eE]|[sS][eE][lL][eE][cC][tT]|[dD][eE][lL][eE][tT][eE]|[aA][dD][dD]|[lL][iI][mM][iI][tT]|[uU][pP][dD][aA][tT][eE]|[iI][nN][sS][eE][rR][tT])"
         }
-      ]
+      }
     },
     "keyword": {
-      "type": "CHOICE",
-      "members": [
-        {
-          "type": "STRING",
-          "value": "true"
-        },
-        {
-          "type": "STRING",
-          "value": "false"
-        },
-        {
-          "type": "STRING",
-          "value": "to"
-        },
-        {
-          "type": "STRING",
-          "value": "string"
-        },
-        {
-          "type": "STRING",
-          "value": "int"
-        },
-        {
-          "type": "STRING",
-          "value": "float"
-        },
-        {
-          "type": "STRING",
-          "value": "double"
-        },
-        {
-          "type": "STRING",
-          "value": "bool"
-        },
-        {
-          "type": "STRING",
-          "value": "boolean"
-        },
-        {
-          "type": "STRING",
-          "value": "from"
+      "type": "TOKEN",
+      "content": {
+        "type": "PREC",
+        "value": 1,
+        "content": {
+          "type": "PATTERN",
+          "value": "(?:[tT][rR][uU][eE]|[fF][aA][lL][sS][eE]|[tT][oO]|[sS][tT][rR][iI][nN][gG]|[iI][nN][tT]|[fF][lL][oO][aA][tT]|[dD][oO][uU][bB][lL][eE]|[bB][oO][oO][lL]|[bB][oO][oO][lL][eE][aA][nN]|[fF][rR][oO][mM])"
         }
-      ]
+      }
     },
     "_other": {
       "type": "TOKEN",
